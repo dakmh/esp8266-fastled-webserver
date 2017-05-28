@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 /*
    ESP8266 + FastLED + IR Remote + MSGEQ7: https://github.com/jasoncoon/esp8266-fastled-webserver
    Copyright (C) 2015 Jason Coon
@@ -46,12 +48,12 @@ const char* password = "";
 
 ESP8266WebServer server(80);
 
-#define DATA_PIN      D8     // for Huzzah: Pins w/o special function:  #4, #5, #12, #13, #14; // #16 does not work :(
-#define LED_TYPE      WS2812
+#define DATA_PIN      D4 // D4 maps to the D2 pin on the NodeMCU     // for Huzzah: Pins w/o special function:  #4, #5, #12, #13, #14; // #16 does not work :(
+#define LED_TYPE      WS2812B
 #define COLOR_ORDER   GRB
-#define NUM_LEDS      24
+#define NUM_LEDS      6
 
-#define MILLI_AMPS         2000     // IMPORTANT: set here the max milli-Amps of your power supply 5V 2A = 2000
+#define MILLI_AMPS         500     // IMPORTANT: set here the max milli-Amps of your power supply 5V 2A = 2000
 #define FRAMES_PER_SECOND  120 // here you can control the speed. With the Access Point / Web Server the animations run a bit slower.
 
 CRGB leds[NUM_LEDS];
@@ -974,4 +976,3 @@ void palettetest()
   startindex--;
   fill_palette( leds, NUM_LEDS, startindex, (256 / NUM_LEDS) + 1, gCurrentPalette, 255, LINEARBLEND);
 }
-
