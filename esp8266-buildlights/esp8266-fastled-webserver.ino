@@ -193,6 +193,15 @@ void setup(void) {
     sendPower();
   });
 
+  server.on("/buildsuccess", HTTP_GET, []() {
+    buildSuccess();
+    sendSolidColor();
+  });
+  server.on("/buildfail", HTTP_GET, []() {
+    buildFailure();
+    sendSolidColor();
+  });
+
   server.on("/power", HTTP_POST, []() {
     String value = server.arg("value");
     setPower(value.toInt());
@@ -284,6 +293,11 @@ typedef PatternAndName PatternAndNameList[];
 
 // List of patterns to cycle through.  Each is defined as a separate function below.
 PatternAndNameList patterns = {
+  { buildSuccess, "Success" },
+  { buildFailure, "Failure" },
+  { serviceLightsPolice, "Police" },
+  { showSolidPattern, "Pattern" },
+  { showSolidPatternNoBlend, "Pattern, no blending" },
   { colorwaves, "Color Waves" },
   { palettetest, "Palette Test" },
   { pride, "Pride" },
@@ -305,6 +319,7 @@ typedef struct {
 typedef PaletteAndName PaletteAndNameList[];
 
 const CRGBPalette16 palettes[] = {
+  policePalette,
   RainbowColors_p,
   RainbowStripeColors_p,
   CloudColors_p,
@@ -318,6 +333,7 @@ const CRGBPalette16 palettes[] = {
 const uint8_t paletteCount = ARRAY_SIZE(palettes);
 
 const String paletteNames[paletteCount] = {
+  "Police",
   "Rainbow",
   "Rainbow Stripe",
   "Cloud",
@@ -359,7 +375,7 @@ void loop(void) {
 
   // slowly blend the current cpt-city gradient palette to the next
   EVERY_N_MILLISECONDS(40) {
-    nblendPaletteTowardPalette( gCurrentPalette, gTargetPalette, 16);
+    nblendPaletteTowardPalette( gCurrentPalette, gTargetPalette, 24);
   }
 
   if (autoplayEnabled && millis() > autoPlayTimeout) {
@@ -815,6 +831,16 @@ void showSolidColor()
   fill_solid(leds, NUM_LEDS, solidColor);
 }
 
+void showSolidPattern()
+{
+  fill_palette( leds, NUM_LEDS, 0, (256 / NUM_LEDS) + 1, gCurrentPalette, 255, LINEARBLEND);
+}
+
+void showSolidPatternNoBlend()
+{
+  fill_palette( leds, NUM_LEDS, 0, (256 / NUM_LEDS) + 1, gCurrentPalette, 255, NOBLEND);
+}
+
 void rainbow()
 {
   // FastLED's built-in rainbow generator
@@ -833,6 +859,64 @@ void addGlitter( fract8 chanceOfGlitter)
   if ( random8() < chanceOfGlitter) {
     leds[ random16(NUM_LEDS) ] += CRGB::White;
   }
+}
+
+void buildSuccess()
+{
+  CRGBPalette16 successPalette = CRGBPalette16( CRGB::Green );
+  gTargetPalette = successPalette;
+  // for (size_t i = 0; i < 255; i++) {
+  //   nblendPaletteTowardPalette( gCurrentPalette, successPalette, 16);
+  // }
+  // setSolidColor(CRGB::Green);
+  showSolidPattern();
+}
+void buildFailure()
+{
+  CRGBPalette16 failurePalette = CRGBPalette16( CRGB::Red );
+  gTargetPalette = failurePalette;
+  // for (size_t i = 0; i < 255; i++) {
+  //   nblendPaletteTowardPalette( gCurrentPalette, failurePalette, 16);
+  // }
+  // setSolidColor(CRGB::Red);
+  showSolidPattern();
+}
+// DEFINE_GRADIENT_PALETTE( police_gp ) {
+//   0, CRGB::Red,
+//   127, CRGB::Red,
+//   128, CRGB::Blue,
+//   255, CRGB::Blue
+// };
+DEFINE_GRADIENT_PALETTE( police_gp ) {
+  0, 255, 0, 0,
+  84, 255, 0, 0,
+  85, 255, 255, 255,
+  168, 255, 255, 255,
+  169, 0, 0, 255,
+  255, 0, 0, 255
+};
+
+void serviceLightsPolice()
+{
+  // // CRGBPalette16 policePalette = police_gp;
+  // gTargetPalette = policePalette;
+  // // for (size_t i = 0; i < 255; i++) {
+  // //   nblendPaletteTowardPalette( gCurrentPalette, failurePalette, 16);
+  // // }
+  // // setSolidColor(CRGB::Red);
+  // showSolidPatternNoBlend();
+
+  EVERY_N_MILLISECONDS(1000) {
+    if (gTargetPalette == policePalette)
+    {
+      gTargetPalette = policePaletteAlt;
+    }
+    else
+    {
+      gTargetPalette = policePalette;
+    }
+  }
+  showSolidPatternNoBlend();
 }
 
 void confetti()

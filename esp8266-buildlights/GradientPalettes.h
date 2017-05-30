@@ -465,6 +465,43 @@ DEFINE_GRADIENT_PALETTE( Blue_Cyan_Yellow_gp ) {
   191,  42,255, 45,
   255, 255,255,  0};
 
+CRGBPalette16 policePalette = CRGBPalette16(
+    CRGB::Red,
+    CRGB::Red,
+    CRGB::Red,
+    CRGB::Red,
+    CRGB::Red,
+    CRGB::White,
+    CRGB::White,
+    CRGB::White,
+    CRGB::White,
+    CRGB::White,
+    CRGB::Blue,
+    CRGB::Blue,
+    CRGB::Blue,
+    CRGB::Blue,
+    CRGB::Blue,
+    CRGB::Blue
+ );
+
+ CRGBPalette16 policePaletteAlt = CRGBPalette16(
+     CRGB::White,
+     CRGB::White,
+     CRGB::White,
+     CRGB::White,
+     CRGB::White,
+     CRGB::White,
+     CRGB::White,
+     CRGB::White,
+     CRGB::White,
+     CRGB::White,
+     CRGB::White,
+     CRGB::White,
+     CRGB::White,
+     CRGB::White,
+     CRGB::White,
+     CRGB::White
+  );
 
 // Single array of defined cpt-city color palettes.
 // This will let us programmatically choose one based on
@@ -515,4 +552,3 @@ const TProgmemRGBGradientPalettePtr gGradientPalettes[] = {
 // Count of how many cpt-city gradients are defined:
 const uint8_t gGradientPaletteCount =
   sizeof( gGradientPalettes) / sizeof( TProgmemRGBGradientPalettePtr );
-
